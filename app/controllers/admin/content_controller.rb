@@ -113,6 +113,18 @@ class Admin::ContentController < Admin::BaseController
     render :text => nil
   end
 
+  def merge
+    if current_user.admin?
+      if (Article.find_by_id(params[:id]).merge_with(params[:merge_with]))
+        flash[:notice] = "Succesful: Article id (#{params[:merge_with]}) merged with article id (#{params[:id]})"
+        redirect_to '/admin/content'
+      else
+        flash[:error] = "Error: Article id #{params[:merge_with]} failed to merge with article id (#{params[:id]})"
+        redirect_to "/admin/content/edit/#{params[:id]}#"
+      end
+    end
+   end
+
   protected
 
   def get_fresh_or_existing_draft_for_article
